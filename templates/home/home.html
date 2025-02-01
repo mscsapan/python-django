@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home route</title>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        a {
+            text-decoration: none;
+            color: red;
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <!-- {{ infos }} -->
+
+
+    <table>
+        <tr>
+            <th>SI.No</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Age</th>
+            <th>Address</th>
+            <th>Action</th>
+        </tr>
+
+        {% for x in infos %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ x.name }}</td>
+            <td>{{ x.email }}</td>
+            <td>{{ x.age }}</td>
+            <td>{{ x.address }}</td>
+            <td><a style="color: black;" href="{% url 'edit-person' x.id %}">Edit</a> | <a
+                    href="{% url 'delete-person' x.id %}">Delete</a>
+            </td>
+            <!-- <td><input type="button" value="Edit"> <input type="button" value="Delete"></td> -->
+
+        </tr>
+        {% endfor %}
+
+    </table>
+
+
+</body>
+
+</html>
