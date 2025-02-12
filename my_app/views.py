@@ -63,18 +63,23 @@ def edit_person(request, id):
 
  
 def update_person(request,id):
-    logger.info(f"Request method: {request.method}")
-    if request.method == 'PUT':
-        logger.info(f"PUT data: {request.PUT}")
-        name = request.PUT.get('name')
-        email = request.POPUTST['email']
-        age = request.PUT['age']
-        address = request.PUT['address']
-        person = Person(name = name, email = email, age = age, address = address)
-        person.update()
-        return redirect('home')
-        # return redirect('/')
-
+    try:
+        logger.info(f"Request method: {request.method} {id}")
+        if request.method == 'PUT':
+            logger.info(f"PUT data: {request.PUT}")
+            name = request.PUT.get('name')
+            email = request.POPUTST['email']
+            age = request.PUT['age']
+            address = request.PUT['address']
+            person = Person(name = name, email = email, age = age, address = address)
+            print(f'{person}')
+            JsonResponse(person, safe=False, status=201)
+            # person.update()
+            # return redirect('home')
+            # return redirect('/')
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        return render(request,'errors/404.html',context={'error':e})
     
 def delete_person(request,id):
     person = get_object_or_404(Person,pk=id)
