@@ -1,30 +1,26 @@
+import json
 from django.http import HttpResponse
 from django.shortcuts import render, redirect,get_object_or_404
 from .models import Person
 from django.http import JsonResponse
 from django.core.serializers import serialize
 # import json
-import logging
-
-logger = logging.getLogger(__name__)
 
 def home(request):
     # approach one
     # persons = Person.objects.all()
     # persons_json = json.loads(serialize('json', persons))
     # return JsonResponse(persons_json, safe=False)
-    #return render(request,'home/home.html',context={'infos':persons})
+    # return render(request,'home/home.html',context={'infos':persons})
     
-    # approach otwo
+    # approach two
     # persons = Person.objects.values('id', 'name', 'email', 'age', 'address')
     # return JsonResponse(list(persons), safe=False)
     
     
     # approach three
     # fields = [field.name for field in Person._meta.fields]
-
     # persons = Person.objects.values(*fields)
-
     # return JsonResponse(list(persons), safe=False, status=200)
     
     persons = Person.objects.all()
@@ -38,9 +34,7 @@ def add_person(request):
 
 
 def add_new_person(request):
-    logger.info(f"Request method: {request.method}")
     if request.method == 'POST':
-        logger.info(f"POST data: {request.POST}")
         name = request.POST.get('name')
         email = request.POST['email']
         age = request.POST['age']
@@ -58,29 +52,27 @@ def edit_person(request, id):
     # fields = [field.name for field in Person._meta.fields]
     # person_data = {field: getattr(person, field) for field in fields}
     # return JsonResponse(person_data, safe=False, status=201)
-    print(person)
+    # print(person)
     return render(request,'home/edit-person.html',{'person': person})
 
- 
-def update_person(request,id):
+
+def update_person(request, id):
     try:
-        logger.info(f"Request method: {request.method} {id}")
-        if request.method == 'PUT':
-            logger.info(f"PUT data: {request.PUT}")
-            name = request.PUT.get('name')
-            email = request.POPUTST['email']
-            age = request.PUT['age']
-            address = request.PUT['address']
-            person = Person(name = name, email = email, age = age, address = address)
-            print(f'{person}')
-            JsonResponse(person, safe=False, status=201)
-            # person.update()
-            # return redirect('home')
-            # return redirect('/')
+        if request.method == 'POST':
+            person = get_object_or_404(Person, pk=id)
+            person.name = request.POST.get('name')
+            person.email = request.POST['email']
+            person.age = request.POST['age']
+            person.address = request.POST['address']
+            person.save()
+            print(f"Updated person: {person}")
+            return redirect('home')
     except Exception as e:
-        logger.error(f"Error: {e}")
-        return render(request,'errors/404.html',context={'error':e})
-    
+        return render(request, 'errors/404.html', context={'error': e})
+    return redirect('home')
+
+
+
 def delete_person(request,id):
     person = get_object_or_404(Person,pk=id)
     person.delete()
